@@ -22,6 +22,14 @@ if database_url:
 else:
     # Local development with SQLite
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///goals.db'
+#--added this due to db issue on 01-09-2025
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,      # Verify connections before using
+    'pool_recycle': 300,        # Recycle connections after 5 minutes
+    'connect_args': {
+        'connect_timeout': 10,  # 10 second timeout
+    }
+}
 
 # Security configuration
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -32,8 +40,8 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # Initialize database
-db = SQLAlchemy(app)
-
+db = SQLAlchemy()
+db.init_app(app)
 # ============================================================================
 # LOGGING CONFIGURATION
 # ============================================================================
