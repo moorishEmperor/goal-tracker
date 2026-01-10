@@ -852,9 +852,15 @@ def server_error(e):
 
 def init_db():
     """Initialize database tables"""
-    with app.app_context():
-        db.create_all()
-        logger.info("Database tables created successfully")
+    try : 
+        with app.app_context():
+            db.create_all()
+            logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.error(f"Failed to init database: {e}")
+
+if __name__ != '__main__':
+    init_db()
 
 if __name__ == '__main__':
     init_db()
