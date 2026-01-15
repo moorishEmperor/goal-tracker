@@ -22,14 +22,6 @@ if database_url:
 else:
     # Local development with SQLite
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///goals.db'
-#--added this due to db issue on 01-09-2025
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_pre_ping': True,      # Verify connections before using
-    'pool_recycle': 300,        # Recycle connections after 5 minutes
-    'connect_args': {
-        'connect_timeout': 10,  # 10 second timeout
-    }
-}
 
 # Security configuration
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -40,8 +32,8 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # Initialize database
-db = SQLAlchemy()
-db.init_app(app)
+db = SQLAlchemy(app)
+
 # ============================================================================
 # LOGGING CONFIGURATION
 # ============================================================================
@@ -852,15 +844,9 @@ def server_error(e):
 
 def init_db():
     """Initialize database tables"""
-    try : 
-        with app.app_context():
-            db.create_all()
-            logger.info("Database tables created successfully")
-    except Exception as e:
-        logger.error(f"Failed to init database: {e}")
-
-if __name__ != '__main__':
-    init_db()
+    with app.app_context():
+        db.create_all()
+        logger.info("Database tables created successfully")
 
 if __name__ == '__main__':
     init_db()
