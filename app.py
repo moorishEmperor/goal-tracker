@@ -32,7 +32,8 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # Initialize database
-db = SQLAlchemy(app)
+db = SQLAlchemy()
+db.init_app(app)
 
 # ============================================================================
 # LOGGING CONFIGURATION
@@ -850,5 +851,5 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5005))
     app.run(host='0.0.0.0', port=port, debug=False)
